@@ -38,9 +38,9 @@ export const addMerchant = params => { return axios.get(`${base}/merchant/add`, 
 
 export const editMerchant = params => { return axios.get(`${base}/merchant/edit`, { params: params }); };
 
-export const getClassify= params => { return axios.get(`${base}/classify/query`, { params: params }); };
+export const getClassify= params => { return axios.post(`${base}/classify/query`, { params: params }); };
 
-export const addClassify = params => { return axios.get(`${base}/classify/add`, { params: params }); };
+export const addClassify = params => { return axios.post(`${base}/classify/add`, params); };
 
 export const editClassify = params => { return axios.get(`${base}/classify/update`, { params: params }); };
 

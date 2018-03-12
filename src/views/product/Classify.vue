@@ -183,7 +183,7 @@
 		          name: this.filters.name
 		        };
 		        this.loading = true;
-		        console.log(para)
+
 		        getClassify(para).then((res) => {
 		            //console.log(res.data.rows)
 					let{success,msg}=res.data

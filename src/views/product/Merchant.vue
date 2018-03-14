@@ -205,6 +205,7 @@
 		          name: this.filters.name
 		        };
 		        this.listLoading = true;
+				  console.log(para)
 		        getMerchantListPage(para).then((res) => {
 		        	//console.log(res.data.rows)
 					let{msg,success}=res.data
@@ -237,7 +238,7 @@
 				}).then(() => {
 					this.listLoading = true;
 					//NProgress.start();
-					let para = { id: row.id ,state:row.state};
+					let para = { id: row.id ,state:row.state=='1'?0:1};
 					console.log(para)
 					changeState(para).then((res) => {
 						//console.log(res)

@@ -28,28 +28,28 @@ export const requestLogin = params => {
 
 //export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
 
-export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
+export const addUser = params => { return axios.post(`${base}/user/add`, { params: params }); };
 
-export const getMerchantListPage = params => { return axios.get(`${base}/merchant/listpage`, { params: params }); };
+export const getMerchantListPage = params => { return axios.get(`${base}/merchant/query`,{ params: params }); };
 
-export const changeState = params => { return axios.get(`${base}/merchant/changeState`, { params: params }); };
+export const changeState = params => { return axios.get(`${base}/merchant/changeState`,{ params: params }); };
 
-export const addMerchant = params => { return axios.get(`${base}/merchant/add`, { params: params }); };
+export const addMerchant = params => { return axios.post(`${base}/merchant/add`,params); };
 
-export const editMerchant = params => { return axios.get(`${base}/merchant/edit`, { params: params }); };
+export const editMerchant = params => { return axios.post(`${base}/merchant/update`,params); };
 
-export const getClassify= params => { return axios.post(`${base}/classify/query`, { params: params }); };
+export const getClassify= params => { return axios.post(`${base}/classify/query`,params); };
 
 export const addClassify = params => { return axios.post(`${base}/classify/add`, params); };
 
-export const editClassify = params => { return axios.get(`${base}/classify/update`, { params: params }); };
+export const editClassify = params => { return axios.post(`${base}/classify/update`, params); };
 
-export const removeClassify = params => { return axios.get(`${base}/classify/delete`, { params: params }); };
+export const removeClassify = params => { return axios.post(`${base}/classify/delete`,params); };
 
-export const getShopListPage = params => { return axios.get(`${base}/shops/query`, { params: params }); };
+export const getShopListPage = params => { return axios.post(`${base}/shops/query`, params); };
 
 
 
-export const getClassfyOpt= params => { return axios.get(`${base}/shops/classfyOpt`, { params: params }); };
+export const getClassfyOpt= params => { return axios.post(`${base}/shops/classfyOpt`, params); };
 
 export const getCodeUrl = params =>{return axios.post(`${base}/getCodeUrl`, params).then(res => res.data); };

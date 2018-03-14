@@ -336,13 +336,14 @@
 			},
 			//删除一条数据
 			handleDel: function (index, row) {
-				//console.log(row)
+
 				//let state = row.state == '1'?'停用':'启用'
 				this.$confirm('确认删除该记录吗?', '提示', {
 					type: 'warning'
 				}).then(() => {
 					this.listLoading = true;
 					let para = { id: row.id };
+					console.log(para)
 					removeClassify(para).then((res) => {
 						//console.log(res)
 						let {success,msg} = res.data

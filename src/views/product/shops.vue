@@ -102,11 +102,11 @@
 		<!--新增界面-->
 		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
 			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="商户名称" >
+				<el-form-item label="商铺名称" >
 					<el-input v-model="addForm.name" auto-complete="off" style="width:300px"></el-input>
 				</el-form-item>
 				<el-form-item label="商铺位置">
-					<el-input v-model="addForm.name" auto-complete="off" style="width:400px"></el-input>
+					<el-input v-model="addForm.shopAddr" auto-complete="off" style="width:400px"></el-input>
 				</el-form-item>
 				<el-form-item label="商铺分类">
 					<el-cascader
@@ -488,7 +488,8 @@
 			getClassfyOptions(){
 				let para = {}
 				getClassfyOpt(para).then((res) => {
-					//console.log(res.data)
+                    console.log("===================================")
+					console.log(res.data)
 					let{msg,success,rows}=res.data
 					if(success){
 			           this.classfyOpt = rows
@@ -505,7 +506,7 @@
 			}
 		},
 		mounted() {
-      		this.getMerchants();
+      		//this.getMerchants();
       		this.getShops();
       		this.getClassfyOptions();//获取商铺的全部分类
 		}

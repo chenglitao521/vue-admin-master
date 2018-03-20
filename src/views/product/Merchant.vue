@@ -222,7 +222,7 @@
 		        });
 		      },
 		    handleDetial(index,row){
-		    	console.log(row.id)
+		    	//console.log(row.id)
 		    	this.$router.push({ 
 		    		path: '/shops',
 		    		name: 'shops',

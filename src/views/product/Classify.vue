@@ -27,7 +27,7 @@
 				</el-table-column>
 				<el-table-column prop="subName" label="二级目录" >
 					<template scope="scope">
-						<span  >{{getSubName(scope.row.subName)}}</span>
+						<span >{{subNames(scope.row.subName)}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column prop="sort" label="排序" width="120" sortable>
@@ -177,26 +177,9 @@
 				}
 		    }
 		},
-		computed: {
-			// 计算属性的 getter
-/*			reversedMessage: function () {
-				// `this` 指向 vm 实例
-				return this.Classifys.filter(function (item) {
-					console.info(item);
-					let result ="";
-					for (let i=0;i<item.subNames.length;i++){
-						if(subNames[i]!=null){
-							if(i=0){
-								result=subNames[i];
-							}else{
-								result = result + "," + subNames[i];
-							}
-						}
-					}
-					return result;
-				})
-			}*/
-		},
+        computed: {
+
+        },
 		methods: {
 		    getClassify(){
 		        let para = {
@@ -219,20 +202,21 @@
 		          //NProgress.done();
 		        });
 			},
+            subNames: function (subName) {
 
-			getSubName(subNames){
-				let result ="";
-				for (let i=0;i<subNames.length;i++){
-					if(subNames[i].name!=null){
-						if(i==0){
-							result=subNames[i].name;
-						}else{
-							result = result + "," + subNames[i].name;
-						}
-					}
-				}
-				return result;
-			},
+                console.info(subName);
+                let names = "";
+                for (let i = 0; i < subName.length; i++) {
+                    if (subName[i].name != null) {
+                        if (i == 0) {
+                            names += subName[i].name;
+                        } else {
+                            names = names + "," + subName[i].name;
+                        }
+                    }
+                }
+                return names;
+            },
 		    //显示新增界面
 		    handleAdd: function () {
 		      this.addFormVisible = true;
@@ -337,6 +321,7 @@
 				this.editFormVisible = true;
 				console.log(row)
 				this.editForm = Object.assign({}, row);
+                console.log(this.editForm)
 			},
 			//编辑
 			editSubmit: function () {

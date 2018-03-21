@@ -43,7 +43,7 @@
           }
         },
         mounted(){
-            console.log(this.imgFiles)
+            //console.log(this.imgFiles)
             this.files = this.imgFiles
         },
         data() {

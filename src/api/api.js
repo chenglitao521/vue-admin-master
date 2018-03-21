@@ -50,6 +50,6 @@ export const getShopListPage = params => { return axios.get(`${base}/shops/query
 
 
 
-export const getClassfyOpt= params => { return axios.post(`${base}/classify/query`, params); };
+export const getClassfyOpt= params => { return axios.post(`${base}/shops/classfyOpt`, params); };
 
 export const getCodeUrl = params =>{return axios.post(`${base}/getCodeUrl`, params).then(res => res.data); };

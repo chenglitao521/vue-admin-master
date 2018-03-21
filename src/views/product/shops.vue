@@ -106,25 +106,25 @@
 					<el-input v-model="addForm.name" auto-complete="off" style="width:300px"></el-input>
 				</el-form-item>
 				<el-form-item label="商铺位置">
-					<el-input v-model="addForm.shopAddr" auto-complete="off" style="width:400px"></el-input>
+					<el-input v-model="addForm.position" auto-complete="off" style="width:400px"></el-input>
 				</el-form-item>
 				<el-form-item label="商铺分类">
 					<el-cascader
 					    expand-trigger="hover"
 					    :options="classfyOpt"
-					    v-model="selClassfyOpt"
+					    v-model="addForm.selClassfyOpt"
 					    @change="handleClassfyOptChange">
 					</el-cascader>
 				</el-form-item>
 				<el-form-item label="商铺坐标" >
-					<el-input v-model="addForm.position" auto-complete="off" style="width:300px"></el-input>
+					<el-input v-model="addForm.coordinate" auto-complete="off" style="width:300px"></el-input>
 				</el-form-item>
 				<el-form-item label="商铺面积" >
-					<el-input v-model="addForm.shopArea" auto-complete="off" style="width:200px"></el-input>
+					<el-input v-model="addForm.area" auto-complete="off" style="width:200px"></el-input>
 					<span>平方米</span>
 				</el-form-item>
 				<el-form-item label="层高" >
-					<el-input v-model="addForm.maxHight" auto-complete="off" style="width:200px"></el-input>
+					<el-input v-model="addForm.high" auto-complete="off" style="width:200px"></el-input>
 					<span>米</span>
 				</el-form-item>
 				<el-form-item label="到期时间" >
@@ -141,24 +141,24 @@
 				<el-form-item label="构造" >
 					<el-input v-model="addForm.structure" auto-complete="off" style="width:300px"></el-input>
 				</el-form-item>
-				<el-form-item label="联系电话" >
+		<!--		<el-form-item label="联系电话" >
 					<el-input v-model="addForm.tel" auto-complete="off" style="width:300px"></el-input>
-				</el-form-item>
+				</el-form-item>-->
 				<el-form-item label="电类型">
-					<el-radio-group v-model="addForm.state">
-						<el-radio class="radio" :label="1">商用电</el-radio>
+					<el-radio-group v-model="addForm.electricType">
 						<el-radio class="radio" :label="0">民用电</el-radio>
+						<el-radio class="radio" :label="1">商用电</el-radio>
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="三通">
-					<el-checkbox-group>
-					    <el-checkbox label="水"></el-checkbox>
-					    <el-checkbox label="电"></el-checkbox>
-					    <el-checkbox label="气"></el-checkbox>
+					<el-checkbox-group v-model="addForm.santong"  @change="handleCheckedCitiesChange" >
+					    <el-checkbox label="0"  >水</el-checkbox>
+					    <el-checkbox label="1"  >电</el-checkbox>
+					    <el-checkbox label="2"  >气</el-checkbox>
 					</el-checkbox-group>
 				</el-form-item>
 				<el-form-item label="商铺状态">
-					<el-select v-model="filters.date" placeholder="请选择">
+					<el-select v-model="addForm.status" placeholder="请选择">
 				    <el-option label="待租" value="0"></el-option>
 				    <el-option label="已租" value="1"></el-option>
 				    <el-option label="待售" value="2"></el-option>
@@ -167,16 +167,16 @@
 				</el-form-item>
 				<el-form-item label="租赁期" >
 					<div>
-						<el-input v-model="addForm.tel" auto-complete="off" style="width:150px"></el-input>
+						<el-input v-model="addForm.time" auto-complete="off" style="width:150px"></el-input>
 						<span>月</span>
-						<el-input v-model="addForm.tel" auto-complete="off" style="width:150px;margin-left:10px"></el-input>
+						<el-input v-model="addForm.money" auto-complete="off" style="width:150px;margin-left:10px"></el-input>
 						<span>元</span>
 						<i class="fa fa-plus-square-o handleIcon"></i>
 						<i class="fa fa-minus-square-o handleIcon"></i>
 					</div>
 				</el-form-item>
 				<el-form-item label="其他">
-					<el-input type="textarea" v-model="addForm.addr"></el-input>
+					<el-input type="textarea" v-model="addForm.descp"></el-input>
 				</el-form-item>
 			</el-form>
 			<div>
@@ -203,7 +203,7 @@
     components:{upLoader,codeUploader},
 		data() {
 			return {
-				selClassfyOpt:[],
+				checkList: ['1','2'],
 				classfyOpt: [],
 				merchantId:0,
 				dateOptions:[{value: 'day-7',label: '最近7天'},
@@ -250,21 +250,22 @@
 				addForm: {
 					name:'',//商铺名
 				    type:'',//商铺分类
-				    position:'',//经纬度坐标位置
-				    shopAddr:'',//地址
+					coordinate:'',//经纬度坐标位置
+					position:'',//地址
 				    expireTime:'',//到期时间
-				    shopState:0,//商铺状态0待租，1已租，2已售，3其他
-				    shopArea:0,//商铺面积
-				    maxHight:0,//总层高
-				    floor:0,//楼层
-				    structure:'',//构造
-				    waterEle: [],//"水","电","气"
-				    eleType:0,//电类型，0民用，1商用
+					status:0,//商铺状态0待租，1已租，2已售，3其他
+					area:0,//商铺面积
+					high:0,//总层高
+					floor:0,//楼层
+				    structure:0,//构造 0 框架1 实体墙
+					santong: ['1'],//"水","电","气"
+					electricType:0,//电类型，0民用，1商用
+					selClassfyOpt:[],
 				    rentType:[{//租赁期
 				      time:'',//多少个月
-				      fee:''//月租
+				      money:''//月租
 				    }],
-				    remarks:'',//其他
+					descp:'',//其他
 				    recordFiles:[{//商铺图片
 				      name:'',
 				      src:""
@@ -279,8 +280,11 @@
 			}
 		},
 		methods: {
+			handleCheckedCitiesChange(value){
+				console.log(value);
+			},
 			handleClassfyOptChange(value){
-				console.log(value)
+				console.log(this.selClassfyOpt)
 			},
 			configCodeUrl(data){
 				console.log(data)

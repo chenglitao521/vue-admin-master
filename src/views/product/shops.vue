@@ -146,8 +146,8 @@
 				</el-form-item>-->
 				<el-form-item label="电类型">
 					<el-radio-group v-model="addForm.electricType">
-						<el-radio class="radio" :label="0">民用电</el-radio>
-						<el-radio class="radio" :label="1">商用电</el-radio>
+						<el-radio class="radio" :label=0>民用电</el-radio>
+						<el-radio class="radio" :label=1>商用电</el-radio>
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="三通">
@@ -171,7 +171,7 @@
 						<span>月</span>
 						<el-input v-model="addForm.money" auto-complete="off" style="width:150px;margin-left:10px"></el-input>
 						<span>元</span>
-						<i class="fa fa-plus-square-o handleIcon"></i>
+						<i class="fa fa-plus-square-o handleIcon"  @click="handleCheckedCitiesChange"></i>
 						<i class="fa fa-minus-square-o handleIcon"></i>
 					</div>
 				</el-form-item>
@@ -196,14 +196,14 @@
 
 <script>
 	import util from '../../common/js/util'
-	import { changeState,editMerchant, addMerchant,getMerchantListPage,getShopListPage,getClassfyOpt} from '../../api/api';
+	import { changeState,editMerchant,addShops, addMerchant,getMerchantListPage,getShopListPage,getClassfyOpt} from '../../api/api';
   	import upLoader from '../../components/uploader'
 	import codeUploader from '../../components/codeUploader.vue'
 	export default {
     components:{upLoader,codeUploader},
 		data() {
 			return {
-				checkList: ['1','2'],
+
 				classfyOpt: [],
 				merchantId:0,
 				dateOptions:[{value: 'day-7',label: '最近7天'},
@@ -248,31 +248,31 @@
 				},
 				//新增界面数据
 				addForm: {
-					name:'',//商铺名
-				    type:'',//商铺分类
-					coordinate:'',//经纬度坐标位置
-					position:'',//地址
-				    expireTime:'',//到期时间
-					status:0,//商铺状态0待租，1已租，2已售，3其他
+					name:'商铺',//商铺名
+				    type:'222',//商铺分类
+					coordinate:'111',//经纬度坐标位置
+					position:'四川省',//地址
+				    expireTime:'2018-1-1',//到期时间
+					status:[],//商铺状态0待租，1已租，2已售，3其他
 					area:0,//商铺面积
 					high:0,//总层高
 					floor:0,//楼层
 				    structure:0,//构造 0 框架1 实体墙
-					santong: ['1'],//"水","电","气"
+					santong: ['0','1','2'],//"水","电","气"
 					electricType:0,//电类型，0民用，1商用
-					selClassfyOpt:[],
-				    rentType:[{//租赁期
-				      time:'',//多少个月
-				      money:''//月租
-				    }],
-					descp:'',//其他
-				    recordFiles:[{//商铺图片
-				      name:'',
-				      src:""
-				    }],
-				    qrCode:{//二维码
-				      name:'',
-				      src:""
+					selClassfyOpt:['分类1','分类2'],
+					rentType:[{//租赁期
+						time:'2',//多少个月
+						money:'2'//月租
+					}],
+					descp:'33',//其他
+					recordFiles:[{//商铺图片
+						name:'',
+						src:""
+					}],
+					qrCode:{//二维码
+						name:'',
+						src:""
 				    }
 		        },
 				addfinish:false,
@@ -281,10 +281,10 @@
 		},
 		methods: {
 			handleCheckedCitiesChange(value){
-				console.log(value);
+				console.log(this.addForm.santong);
 			},
 			handleClassfyOptChange(value){
-				console.log(this.selClassfyOpt)
+				console.log(this.addForm.selClassfyOpt)
 			},
 			configCodeUrl(data){
 				console.log(data)
@@ -395,33 +395,7 @@
 			//显示新增界面
 			handleAdd: function () {
 				this.addFormVisible = true;
-				this.addForm = {
-		          	name:'',//商铺名
-				    type:'',//商铺分类
-				    position:'',//经纬度坐标位置
-				    shopAddr:'',//地址
-				    expireTime:'',//到期时间
-				    shopState:0,//商铺状态0待租，1已租，2已售，3其他
-				    shopArea:0,//商铺面积
-				    maxHight:0,//总层高
-				    floor:0,//楼层
-				    structure:'',//构造
-				    waterEle: [],//"水","电","气"
-				    eleType:0,//电类型，0民用，1商用
-				    rentType:[{//租赁期
-				      time:'',//多少个月
-				      fee:''//月租
-				    }],
-				    remarks:'',//其他
-				    recordFiles:[{//商铺图片
-				      name:'',
-				      src:""
-				    }],
-				    qrCode:{//二维码
-				      name:'',
-				      src:""
-				    }
-		        }
+
 			},
 			//编辑
 			editSubmit: function () {
@@ -461,9 +435,10 @@
 					if (valid) {
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {
 							this.addLoading = true;
-              				//console.log(this.addForm)
+
 							let para = Object.assign({}, this.addForm);
-             				 addMerchant(para).then((res) => {
+							console.log(JSON.stringify(para))
+							addShops(para).then((res) => {
 								let {success,msg} = res.data
 								this.addLoading = false;
 								if(success){

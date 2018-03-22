@@ -38,6 +38,8 @@ export const addMerchant = params => { return axios.post(`${base}/merchant/add`,
 
 export const editMerchant = params => { return axios.post(`${base}/merchant/update`,params); };
 
+
+
 export const getClassify= params => { return axios.post(`${base}/classify/query`,params); };
 
 export const addClassify = params => { return axios.post(`${base}/classify/add`, params); };
@@ -46,10 +48,12 @@ export const editClassify = params => { return axios.post(`${base}/classify/upda
 
 export const removeClassify = params => { return axios.post(`${base}/classify/delete`,params); };
 
+
+
 export const getShopListPage = params => { return axios.get(`${base}/shops/query`, { params: params }); };
 
-
+export const addShops = params => { return axios.post(`${base}/shops/add`,params); };
 
 export const getClassfyOpt= params => { return axios.post(`${base}/shops/classfyOpt`, params); };
 
-export const getCodeUrl = params =>{return axios.post(`${base}/getCodeUrl`, params).then(res => res.data); };
+export const getCodeUrl = params =>{return axios.post(`${base}/common/getCodeUrl`, params).then(res => res.data); };

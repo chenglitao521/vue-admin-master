@@ -167,9 +167,9 @@
 				</el-form-item>
 				<el-form-item label="租赁期" >
 					<div>
-						<el-input v-model="addForm.time" auto-complete="off" style="width:150px"></el-input>
+						<el-input v-model="addForm.rentType[0].time" auto-complete="off" style="width:150px"></el-input>
 						<span>月</span>
-						<el-input v-model="addForm.money" auto-complete="off" style="width:150px;margin-left:10px"></el-input>
+						<el-input v-model="addForm.rentType[0].money" auto-complete="off" style="width:150px;margin-left:10px"></el-input>
 						<span>元</span>
 						<i class="fa fa-plus-square-o handleIcon"  @click="handleCheckedCitiesChange"></i>
 						<i class="fa fa-minus-square-o handleIcon"></i>
@@ -205,7 +205,6 @@
 			return {
 
 				classfyOpt: [],
-				merchantId:0,
 				dateOptions:[{value: 'day-7',label: '最近7天'},
 							 {value: 'day-15',label: '最近15天'}, 
 							 {value: 'mon-1',label: '最近1个月'}, 
@@ -248,12 +247,13 @@
 				},
 				//新增界面数据
 				addForm: {
+					merchantId:this.$route.params.merchantId,
 					name:'商铺',//商铺名
 				    type:'222',//商铺分类
 					coordinate:'111',//经纬度坐标位置
 					position:'四川省',//地址
 				    expireTime:'2018-1-1',//到期时间
-					status:[],//商铺状态0待租，1已租，2已售，3其他
+					status:[0],//商铺状态0待租，1已租，2已售，3其他
 					area:0,//商铺面积
 					high:0,//总层高
 					floor:0,//楼层
@@ -262,8 +262,8 @@
 					electricType:0,//电类型，0民用，1商用
 					selClassfyOpt:['分类1','分类2'],
 					rentType:[{//租赁期
-						time:'2',//多少个月
-						money:'2'//月租
+						time:1,//多少个月
+						money:111//月租
 					}],
 					descp:'33',//其他
 					recordFiles:[{//商铺图片
@@ -467,8 +467,6 @@
 			getClassfyOptions(){
 				let para = {}
 				getClassfyOpt(para).then((res) => {
-                    console.log("===================================")
-					console.log(res.data)
 					let{msg,success,rows}=res.data
 					if(success){
 			           this.classfyOpt = rows
@@ -488,6 +486,7 @@
       		//this.getMerchants();
       		this.getShops();
       		this.getClassfyOptions();//获取商铺的全部分类
+			console.info(this.$route.params.merchantId);
 		}
 	}
 

@@ -226,7 +226,7 @@
 		    	this.$router.push({ 
 		    		path: '/shops',
 		    		name: 'shops',
-        			params:{id:row.id} 
+        			params:{merchantId:row.id}
 		    	});
 		    },
 			//更改状态

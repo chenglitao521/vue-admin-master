@@ -21,7 +21,7 @@
 				  </el-select>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="getMerchants">查询</el-button>
+					<el-button type="primary" v-on:click="getShops">查询</el-button>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="handleAdd">新增</el-button>
@@ -37,22 +37,22 @@
 			</el-table-column>
 			<el-table-column prop="name" label="商铺名称" width="120" >
 			</el-table-column>
-			<el-table-column prop="type" label="分类" width="100" >
+			<el-table-column prop="type" label="分类" width="100" :formatter="formatClassify">
 			</el-table-column>
-			<el-table-column prop="position" label="位置" min-width="120" >
+			<el-table-column prop="coordinate" label="位置" min-width="120" >
 			</el-table-column>
-			<el-table-column prop="shopAddr" label="地址" min-width="120" >
+			<el-table-column prop="position" label="地址" min-width="120" >
 			</el-table-column>
-			<el-table-column prop="expireTime" label="到期时间" width="120" sortable>
+			<el-table-column prop="expireTime" label="到期时间" width="120" >
 			</el-table-column>
-			<el-table-column prop="shopState" label="状态" width="120"  :formatter="formatState">
+			<el-table-column prop="status" label="状态" width="120"  :formatter="formatState">
 			</el-table-column>
 			<el-table-column label="操作" width="180">
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<!-- <el-button size="small" type="info" @click="handleDetial(scope.$index, scope.row)">商铺信息</el-button> -->
 					<el-button type="warning" size="small" @click="handleState(scope.$index, scope.row)">
-						{{(scope.row.state =='1'&&'停用')||'启用'}}
+						{{(scope.row.status =='1'&&'停用')||'启用'}}
 					</el-button>
 				</template>
 			</el-table-column>
@@ -131,7 +131,10 @@
 					<el-date-picker
 				      v-model="addForm.expireTime"
 				      type="date"
-				      placeholder="选择日期">
+					  format="yyyy-MM-dd"
+					   placeholder="选择日期"
+					  @change="getFormatTime"
+						>
 				    </el-date-picker>
 				</el-form-item>
 				<el-form-item label="楼层" >
@@ -252,7 +255,7 @@
 				    type:'222',//商铺分类
 					coordinate:'111',//经纬度坐标位置
 					position:'四川省',//地址
-				    expireTime:'2018-1-1',//到期时间
+				    expireTime:"",//到期时间
 					status:[0],//商铺状态0待租，1已租，2已售，3其他
 					area:0,//商铺面积
 					high:0,//总层高
@@ -273,7 +276,8 @@
 					qrCode:{//二维码
 						name:'',
 						src:""
-				    }
+				    },
+					qrCodeUrl:""
 		        },
 				addfinish:false,
 				addStatus:'ready'
@@ -287,7 +291,12 @@
 				console.log(this.addForm.selClassfyOpt)
 			},
 			configCodeUrl(data){
-				console.log(data)
+				this.addForm.qrCodeUrl =data;
+				//console.log(data)
+			},
+			getFormatTime(data){
+				console.info(data);
+				this.addForm.expireTime = data;
 			},
 			getEidtFileChanged(files){
 				//console.log(files)
@@ -297,11 +306,15 @@
 				this.addForm.recordFiles = files
 			},
 			formatState(row, column){
-			  return row.shopState == 1 ? '已租' : row.state == 0 ? '待租': row.state == 2 ? '已售': '其他' ;
+			  return row.status == 0 ? '待租' : row.status == 1 ? '已租': row.status == 2 ? '已售': '其他' ;
+			},
+			formatClassify(row,column){
+
+				return row.catalog+row.catalog1;
 			},
 			handleCurrentChange(val) {
 				this.page = val;
-       			 this.getMerchants();
+				this.getShops();
 			},
 			//获取商铺列表
 			getShops(){
@@ -332,7 +345,7 @@
 				})
 			},
 		      //获取商户户列表
-		      getMerchants() {
+		     /* getMerchants() {
 		        let para = {
 		          page: this.page,
 		          name: this.filters.name
@@ -352,7 +365,7 @@
 					}
 		          	this.listLoading = false;
 		        });
-		      },
+		      },*/
 			//更改状态
 			handleState: function (index, row) {
 				//console.log(row)
@@ -437,13 +450,15 @@
 							this.addLoading = true;
 
 							let para = Object.assign({}, this.addForm);
-							console.log(JSON.stringify(para))
+							para.catalog=para.selClassfyOpt[0];
+							para.catalog1=para.selClassfyOpt[1];
+							console.log(para)
 							addShops(para).then((res) => {
 								let {success,msg} = res.data
 								this.addLoading = false;
 								if(success){
 									this.$message({
-										message: res.data.rows,
+										message: msg,
 										type: 'success'
 									});
 								}else{
@@ -455,7 +470,7 @@
 								this.$refs['addForm'].resetFields();
 								this.addFormVisible = false;
 								this.addfinish = true
-                				this.getMerchants();
+                				this.getShops();
 							});
 						});
 					}

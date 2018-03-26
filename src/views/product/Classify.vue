@@ -4,7 +4,7 @@
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.name" placeholder="姓名"></el-input>
+					<el-input v-model="filters.name" placeholder="目录名"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" v-on:click="getClassify">查询</el-button>
@@ -48,18 +48,20 @@
 					<div class="second-item" >
 						<el-input v-model="addForm.name" auto-complete="off" style="width:200px">
 						</el-input>
+                        <el-form-item prop="icon">
 						<sigl-uploader
 							@fileChanged = "topItemIconChange($event,'add')"
 							:imgFiles="addForm.icon">
 						</sigl-uploader>
+                        </el-form-item>
 					</div>
 				</el-form-item>
-				<el-form-item label="二级目录:" prop="subName">
+				<el-form-item label="二级目录:"  >
 					<!-- <template scope="scope"> -->
 						<div class="second-item" v-for="(item,index) in addForm.subName">
 							<el-input v-model="item.name" auto-complete="off" style="width:200px">
 							</el-input>
-							<sigl-uploader 
+							<sigl-uploader
 								@fileChanged = "subItemIconChange($event,index,'add')"
 								:imgFiles="item.files">
 							</sigl-uploader>
@@ -81,10 +83,12 @@
 					<div class="second-item" >
 						<el-input v-model="editForm.name" auto-complete="off" style="width:200px">
 						</el-input>
-						<sigl-uploader 
-							@fileChanged = "topItemIconChange($event,'edit')"
-							:imgFiles="editForm.icon">
-						</sigl-uploader>
+                        <el-form-item prop="icon">
+                            <sigl-uploader
+                                    @fileChanged="topItemIconChange($event,'edit')"
+                                    :imgFiles="editForm.icon">
+                            </sigl-uploader>
+                        </el-form-item>
 					</div>
 				</el-form-item>
 				<el-form-item label="二级目录:" prop="subName">
@@ -92,7 +96,7 @@
 						<div class="second-item" v-for="(item,index) in editForm.subName">
 							<el-input v-model="item.name" auto-complete="off" style="width:200px">
 							</el-input>
-							<sigl-uploader 
+							<sigl-uploader
 								@fileChanged = "subItemIconChange($event,index,'edit')"
 								:imgFiles="item.files">
 							</sigl-uploader>
@@ -116,6 +120,16 @@
 	export default {
 	  components:{ upLoader,siglUploader},
 		data() {
+			 let validateFile =(rule, value, callback) => {
+
+			 	console.dir(rule);
+                 console.dir(value);
+			 	if(value==""){
+					callback(new Error('请输入密码'));
+				}else{
+					callback();
+				}
+			};
 			return {
 				filters: {
 					name: ''
@@ -128,10 +142,12 @@
 		        // addfinish:false,
 		        addFormRules: {
 		          name: [
-		            { required: true, message: '请输入姓名' }
-		          ],
+		            { required: true, message: '请输入姓名' ,trigger: 'blur'}
+		          ],icon:[{
+						validator:validateFile,message: '请输入姓名' ,trigger: 'blur'
+					}],
 		          subName: [
-		            { required: true, message: '请输入姓名'}
+		            { required: true, message: '请输入姓名' ,trigger: 'blur'}
 		          ],
 		        },
 		        addForm: {//新增界面数据
@@ -140,13 +156,7 @@
 			          	name:'',
 			          	src:''
 				    },
-		          	subName:[{
-			          	name:'',
-			          	files:{
-				          	name:'',
-				          	src:''
-				          }
-			          }]
+		          	subName:[]
 		        },
 		        editFormVisible: false,//编辑界面是否显示
 				editLoading: false,
@@ -187,6 +197,7 @@
 		        };
 		        this.loading = true;
 
+				console.info(para);
 		        getClassify(para).then((res) => {
 		            //console.log(res.data.rows)
 					let{success,msg}=res.data
@@ -267,7 +278,7 @@
 		    },
 		    //一级目录图片更新操作
 		    topItemIconChange(data,type){
-		    	console.log(type)
+		    //	console.log(type)
 		    	if(type == 'add'){
 		    		this.addForm.icon = data[0];
 		    	}else if(type == 'edit'){
@@ -291,7 +302,7 @@
 							this.addLoading = true;
               				//console.log(this.addForm)
 							let para = Object.assign({}, this.addForm);
-							console.log(para)
+							//console.log(para)
              				 addClassify(para).then((res) => {
              				 	console.log(res)
 								let {success,msg} = res.data
@@ -407,7 +418,7 @@
 		line-height: 20px;
 		text-align: center;
 		border: 1px solid #ddd;
-		border-radius:50%; 
+		border-radius:50%;
 		margin-left: 10px;
 		cursor: pointer;
 	}

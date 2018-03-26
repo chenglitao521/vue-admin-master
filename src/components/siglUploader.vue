@@ -22,7 +22,7 @@
     },
     watch:{
       imgFiles(data){
-        console.log(data)
+       // console.log(data)
         this.files[0] = data
       }
     },
@@ -43,7 +43,7 @@
       fileChanged() {
         this.files = []
         const list = this.$refs.file.files
-        console.log(list)
+      //  console.log(list)
         for (let i = 0; i < list.length; i++) {
           if (!this.isContain(list[i])) {
             const item = {

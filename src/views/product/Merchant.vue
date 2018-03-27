@@ -55,16 +55,16 @@
 		<!--编辑界面-->
 		<el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
 			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-				<el-form-item label="商户名称" >
+				<el-form-item label="商户名称" prop="name">
 					<el-input v-model="editForm.name" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="商铺数量">
 					<el-input-number v-model="editForm.shopNum" :min="0" :max="200"></el-input-number>
 				</el-form-item>
-				<el-form-item label="联系人" >
+				<el-form-item label="联系人" prop="concats">
 					<el-input v-model="editForm.concats" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="联系电话" >
+				<el-form-item label="联系电话" prop="tel">
 					<el-input v-model="editForm.tel" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="状态">
@@ -73,14 +73,14 @@
 						<el-radio class="radio" :label="0">停用</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="地址">
+				<el-form-item label="地址" prop="addr">
 					<el-input type="textarea" v-model="editForm.addr"></el-input>
 				</el-form-item>
+				<el-form-item label="备案信息" prop="backup">
+					<up-loader :imgFiles="editForm.recordFiles" @fileChanged="getEidtFileChanged($event)" :finished="addfinish"></up-loader>
+				</el-form-item>
 			</el-form>
-			<div>
-				<label style="display:block;margin:10px 0;">备案信息：</label>
-				<up-loader :imgFiles="editForm.recordFiles" @fileChanged="getEidtFileChanged($event)" :finished="addfinish"></up-loader>
-			</div>
+
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
 				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
@@ -90,32 +90,33 @@
 		<!--新增界面-->
 		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
 			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="商户名称" >
+				<el-form-item label="商户名称" prop="name">
 					<el-input v-model="addForm.name" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="商铺数量">
+				<el-form-item label="商铺数量" >
 					<el-input-number v-model="addForm.shopNum" :min="0" :max="200"></el-input-number>
 				</el-form-item>
-				<el-form-item label="联系人" >
+				<el-form-item label="联系人" prop="concats">
 					<el-input v-model="addForm.concats" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="联系电话" >
+				<el-form-item label="联系电话" prop="tel">
 					<el-input v-model="addForm.tel" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="状态">
+				<el-form-item label="状态" >
 					<el-radio-group v-model="addForm.state">
 						<el-radio class="radio" :label="1">正常</el-radio>
 						<el-radio class="radio" :label="0">停用</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="地址">
+				<el-form-item label="地址" prop="addr">
 					<el-input type="textarea" v-model="addForm.addr"></el-input>
 				</el-form-item>
+				<el-form-item label="备案信息" prop="backup">
+					<!--<label style="display:block;margin:10px 0;">备案信息：</label>-->
+					<up-loader  @fileChanged="getFileChanged($event)" :finished="addfinish"></up-loader>
+				</el-form-item>
 			</el-form>
-			<div>
-				<label style="display:block;margin:10px 0;">备案信息：</label>
-				<up-loader  @fileChanged="getFileChanged($event)" :finished="addfinish"></up-loader>
-			</div>
+
 			<!-- <div style="margin-top: 20px">
 				<code-uploader :finished="addfinish" :status="addStatus" @getCodeUrl="configCodeUrl($event)"></code-uploader>
 			</div> -->
@@ -135,6 +136,14 @@
 	export default {
     components:{upLoader,codeUploader},
 		data() {
+            var validateFile = (rule, value, callback) => {
+              //  console.info(this.addForm.recordFiles);
+                if (this.addForm.recordFiles.length==0) {
+                    callback(new Error('请上传图片'));
+                }else {
+                    callback();
+                }
+            };
 			return {
 				filters: {
 					name: ''
@@ -147,9 +156,39 @@
 				editFormVisible: false,//编辑界面是否显示
 				editLoading: false,
 				editFormRules: {
-					name: [
-						{ required: true, message: '请输入姓名', trigger: 'blur' }
-					]
+                    name: [
+                        { required: true, message: '请输入姓名', trigger: 'blur' }
+                    ],
+                    concats: [
+                        { required: true, message: '请输入联系人', trigger: 'blur' }
+                    ],
+                    tel: [
+                        { required: true,message: '请输入联系电话', trigger: 'blur' },
+                        {
+                            validator: function (rule, value, callback) {
+                                var MobileRegex = /^1[0-9]{10}$/;
+                                if (!MobileRegex.test(value)) {
+                                    callback(new Error('手机号码格式不正确！'))
+                                } else {
+                                    callback();
+                                }
+                            }, trigger: 'blur'
+                        }
+                    ],
+                    addr: [
+                        { required: true, message: '请输入地址', trigger: 'blur' }
+                    ],
+                    backup:[
+                        { required: true,
+							validator:(rule, value, callback) => {
+                                //  console.info(this.addForm.recordFiles);
+                                if (this.editForm.recordFiles.length==0) {
+                                    callback(new Error('请上传图片'));
+                                }else {
+                                    callback();
+                                }
+                            }, trigger: 'blur' },
+                    ]
 				},
 				//编辑界面数据
 				editForm: {
@@ -167,6 +206,28 @@
 				addFormRules: {
 					name: [
 						{ required: true, message: '请输入姓名', trigger: 'blur' }
+					],
+                    concats: [
+                        { required: true, message: '请输入联系人', trigger: 'blur' }
+                    ],
+                    tel: [
+                        { required: true,message: '请输入电话', trigger: 'blur' },
+                        {
+                            validator: function (rule, value, callback) {
+                                var MobileRegex = /^1[0-9]{10}$/;
+                                if (!MobileRegex.test(value)) {
+                                    callback(new Error('手机号码格式不正确！'))
+                                } else {
+                                    callback();
+                                }
+                            }, trigger: 'blur'
+                        }
+                    ],
+                    addr: [
+                        { required: true, message: '请输入地址', trigger: 'blur' }
+                    ],
+                    backup:[
+                        { required: true,validator:validateFile, trigger: 'blur' },
 					]
 				},
 				//新增界面数据
@@ -174,8 +235,8 @@
 					name: '',
 		            shopNum:0,
 		            concats:'',
-		            tel:'',
-		            state:'1',
+		            tel:'13211111111',
+		            state:1,
 				    addr: '',
 		            recordFiles:[],//备案信息
 		        },
@@ -273,16 +334,7 @@
 			//显示新增界面
 			handleAdd: function () {
 				this.addFormVisible = true;
-				this.addForm = {
-		          	name: '',
-		            shopNum:0,
-		            concats:'',
-		            tel:'',
-		            state:'',
-		            addr: '',
-		          	//codeUrl:'',
-		            recordFiles:[],//备案信息
-		        }
+
 			},
 			//编辑
 			editSubmit: function () {

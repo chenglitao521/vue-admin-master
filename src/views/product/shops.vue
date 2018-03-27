@@ -102,13 +102,13 @@
 		<!--新增界面-->
 		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
 			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="商铺名称" >
+				<el-form-item label="商铺名称" prop="name" >
 					<el-input v-model="addForm.name" auto-complete="off" style="width:300px"></el-input>
 				</el-form-item>
-				<el-form-item label="商铺位置">
+				<el-form-item label="商铺位置"  prop="position">
 					<el-input v-model="addForm.position" auto-complete="off" style="width:400px"></el-input>
 				</el-form-item>
-				<el-form-item label="商铺分类">
+				<el-form-item label="商铺分类"  prop="selClassfyOpt">
 					<el-cascader
 					    expand-trigger="hover"
 					    :options="classfyOpt"
@@ -116,18 +116,18 @@
 					    @change="handleClassfyOptChange">
 					</el-cascader>
 				</el-form-item>
-				<el-form-item label="商铺坐标" >
+				<el-form-item label="商铺坐标" prop="coordinate">
 					<el-input v-model="addForm.coordinate" auto-complete="off" style="width:300px"></el-input>
 				</el-form-item>
-				<el-form-item label="商铺面积" >
-					<el-input v-model="addForm.area" auto-complete="off" style="width:200px"></el-input>
+				<el-form-item label="商铺面积" prop="area">
+					<el-input v-model.number="addForm.area" auto-complete="off" style="width:200px"></el-input>
 					<span>平方米</span>
 				</el-form-item>
-				<el-form-item label="层高" >
-					<el-input v-model="addForm.high" auto-complete="off" style="width:200px"></el-input>
+				<el-form-item label="层高" prop="high">
+					<el-input v-model.number="addForm.high" auto-complete="off" style="width:200px"></el-input>
 					<span>米</span>
 				</el-form-item>
-				<el-form-item label="到期时间" >
+				<el-form-item label="到期时间" prop="expireTime" >
 					<el-date-picker
 				      v-model="addForm.expireTime"
 				      type="date"
@@ -137,30 +137,30 @@
 						>
 				    </el-date-picker>
 				</el-form-item>
-				<el-form-item label="楼层" >
-					<el-input v-model="addForm.floor" auto-complete="off" style="width:200px"></el-input>
+				<el-form-item label="楼层" prop="floor">
+					<el-input v-model.number="addForm.floor" auto-complete="off" style="width:200px"></el-input>
 					<span>层</span>
 				</el-form-item>
-				<el-form-item label="构造" >
+				<el-form-item label="构造" prop="structure">
 					<el-input v-model="addForm.structure" auto-complete="off" style="width:300px"></el-input>
 				</el-form-item>
 		<!--		<el-form-item label="联系电话" >
 					<el-input v-model="addForm.tel" auto-complete="off" style="width:300px"></el-input>
 				</el-form-item>-->
-				<el-form-item label="电类型">
+				<el-form-item label="电类型" prop="electricType">
 					<el-radio-group v-model="addForm.electricType">
 						<el-radio class="radio" :label=0>民用电</el-radio>
 						<el-radio class="radio" :label=1>商用电</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="三通">
+				<el-form-item label="三通" prop="santong">
 					<el-checkbox-group v-model="addForm.santong"  @change="handleCheckedCitiesChange" >
 					    <el-checkbox label="0"  >水</el-checkbox>
 					    <el-checkbox label="1"  >电</el-checkbox>
 					    <el-checkbox label="2"  >气</el-checkbox>
 					</el-checkbox-group>
 				</el-form-item>
-				<el-form-item label="商铺状态">
+				<el-form-item label="商铺状态" prop="status">
 					<el-select v-model="addForm.status" placeholder="请选择">
 				    <el-option label="待租" value="0"></el-option>
 				    <el-option label="已租" value="1"></el-option>
@@ -243,11 +243,49 @@
 				},
 				addFormVisible: false,//新增界面是否显示
 				addLoading: false,
-				addFormRules: {
-					name: [
-						{ required: true, message: '请输入姓名', trigger: 'blur' }
-					]
-				},
+                addFormRules: {
+                    name: [
+                        {required: true, message: '请输入商铺名称', trigger: 'blur'}
+                    ],
+                    coordinate: [
+                        {required: true, message: '请输入商铺坐标', trigger: 'blur'}
+                    ],
+                    position: [
+                        {required: true, message: '请输入商铺名称', trigger: 'blur'}
+                    ],
+                    selClassfyOpt: [
+                        {required: true, message: '请选择商铺分类', trigger: 'change'}
+                    ],
+                    area: [
+                        {required: true, message: '请输入商铺面积', trigger: 'blur'},
+                        { type: 'number', message: '面积必须为数字值'}
+                    ],
+                    high: [
+                        {required: true, message: '请输入商铺层高', trigger: 'blur'},
+                        { type: 'number', message: '层高必须为数字值'}
+                    ],
+                    expireTime: [
+                        {type: 'date', required: true, message: '请输入到期时间', trigger: 'change'}
+                    ],
+                    floor: [
+                        {required: true, message: '请输入商铺楼层', trigger: 'blur'},
+                        { type: 'number', message: '楼层必须为数字值'}
+                    ],
+
+                    structure: [
+                        {required: true, message: '请输入商铺构造', trigger: 'blur'}
+                    ],
+					electricType: [
+                        {required: true, message: '请选择电类型', trigger: 'change'}
+                    ],
+                    santong: [
+                        { type: 'array',required: true, message: '请选择三通', trigger: 'change'}
+                    ],
+                    status: [
+                        { required: true, message: '请选择商铺状态', trigger: 'change'}
+                    ]
+
+                },
 				//新增界面数据
 				addForm: {
 					merchantId:this.$route.params.merchantId,

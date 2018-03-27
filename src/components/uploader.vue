@@ -3,7 +3,7 @@
         <div class="file-list">
             <section v-for="(file, index) in files" class="file-item draggable-item">
                 <img :src="file.src" alt="" ondragstart="return false;">
-                <p class="file-name">{{file.name}}</p>
+               <!-- <p class="file-name">{{file.name}}</p>-->
                 <span class="file-remove" @click="remove(index)">+</span>
             </section>
             <section v-if="status == 'ready'" class="file-item">

@@ -267,6 +267,8 @@
 				this.editFormVisible = true;
 				console.log(row)
 				this.editForm = Object.assign({}, row);
+
+
 			},
 			//显示新增界面
 			handleAdd: function () {

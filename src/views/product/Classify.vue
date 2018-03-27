@@ -278,6 +278,7 @@
 		    },
 		    //删除一条二级目录
 		    delSubItem(index,type){
+
 		    	console.log(type)
 		    	if(type == 'add'){
 		    		this.addForm.subName.splice(index, 1)

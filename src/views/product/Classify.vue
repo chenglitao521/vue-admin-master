@@ -16,23 +16,25 @@
 		<!--列表-->
 		<template>
 			<el-table :data="Classifys" highlight-current-row v-loading="loading" style="width: 100%;">
-				<el-table-column prop="id" label="ID" >
+				<el-table-column type="index" min-width="60">
 				</el-table-column>
-				<el-table-column prop="name" label="一级目录" width="120" >
+		<!--		<el-table-column prop="id" label="ID" >
+				</el-table-column>-->
+				<el-table-column prop="name" label="一级目录" min-width="120" >
 				</el-table-column>
-				<el-table-column prop="icon" label="ICON" width="100">
+				<el-table-column prop="icon" label="ICON" min-width="100">
 					<template scope="scope">
 						<img :src="scope.row.icon.src" alt="icon" style="width:24px;height:24px">
 					</template>
 				</el-table-column>
-				<el-table-column prop="subName" label="二级目录" >
+				<el-table-column prop="subName" label="二级目录" min-width="150">
 					<template scope="scope">
 						<span >{{subNames(scope.row.subName)}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="sort" label="排序" width="120" sortable>
-				</el-table-column>
-				<el-table-column label="操作" width="150">
+			<!--	<el-table-column prop="sort" label="排序" width="120" sortable>
+				</el-table-column>-->
+				<el-table-column label="操作" min-width="120">
 					<template scope="scope">
 						<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 						<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -42,7 +44,7 @@
 		</template>
 
 		<!--新增界面-->
-		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
+		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false" @close="resetAddForm">
 			<el-form :model="addForm" label-width="100px" :rules="addFormRules" ref="addForm">
 				<el-form-item label="一级目录:" prop="name">
 					<div class="second-item" >
@@ -72,7 +74,7 @@
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="addFormVisible = false">取消</el-button>
+				<el-button @click.native="resetAddForm">取消</el-button>
 				<el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
 			</div>
 		</el-dialog>
@@ -122,10 +124,11 @@
 		data() {
 			 let validateFile =(rule, value, callback) => {
 
-			 	console.dir(rule);
                  console.dir(value);
 			 	if(value==""){
-					callback(new Error('请输入密码'));
+					callback(new Error('请上传图片'));
+				}else if(value.name==""||value.src==""){
+					callback(new Error('请上传图片'));
 				}else{
 					callback();
 				}
@@ -144,7 +147,7 @@
 		          name: [
 		            { required: true, message: '请输入姓名' ,trigger: 'blur'}
 		          ],icon:[{
-						validator:validateFile,message: '请输入姓名' ,trigger: 'blur'
+						validator:validateFile,trigger: 'blur'
 					}],
 		          subName: [
 		            { required: true, message: '请输入姓名' ,trigger: 'blur'}
@@ -191,13 +194,19 @@
 
         },
 		methods: {
+			resetAddForm(){
+				this.addFormVisible=false;
+				this.$refs['addForm'].resetFields();
+				//console.info(this.addForm.icon);
+
+			},
 		    getClassify(){
 		        let para = {
 		          name: this.filters.name
 		        };
 		        this.loading = true;
 
-				console.info(para);
+				//console.info(para);
 		        getClassify(para).then((res) => {
 		            //console.log(res.data.rows)
 					let{success,msg}=res.data

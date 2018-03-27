@@ -21,8 +21,8 @@
 			</el-table-column> -->
 			<el-table-column type="index" width="60">
 			</el-table-column>
-			<el-table-column prop="id" label="商户ID" width="120" >
-			</el-table-column>
+	<!--		<el-table-column prop="id" label="商户ID" width="120" >
+			</el-table-column>-->
 			<el-table-column prop="name" label="商户名称" width="120" >
 			</el-table-column>
 			<!-- <el-table-column prop="classfy" label="分类" width="120" >
@@ -175,7 +175,7 @@
 		            shopNum:0,
 		            concats:'',
 		            tel:'',
-		            state:'',
+		            state:'1',
 				    addr: '',
 		            recordFiles:[],//备案信息
 		        },
@@ -205,7 +205,7 @@
 		          name: this.filters.name
 		        };
 		        this.listLoading = true;
-				  console.log(para)
+				 // console.log(para)
 		        getMerchantListPage(para).then((res) => {
 		        	//console.log(res.data.rows)
 					let{msg,success}=res.data

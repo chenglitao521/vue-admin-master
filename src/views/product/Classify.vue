@@ -51,10 +51,19 @@
 						<el-input v-model="addForm.name" auto-complete="off" style="width:200px">
 						</el-input>
                         <el-form-item prop="icon">
-						<sigl-uploader
+							<el-upload
+									class="avatar-uploader"
+									action="http://localhost:8081/common/getCodeUrl"
+									:show-file-list="false"
+									:on-success="handleAvatarSuccess"
+									:before-upload="beforeAvatarUpload">
+								<img v-if="imageUrl" :src="imageUrl" class="avatar">
+								<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+							</el-upload>
+			<!--			<sigl-uploader
 							@fileChanged = "topItemIconChange($event,'add')"
 							:imgFiles="addForm.icon">
-						</sigl-uploader>
+						</sigl-uploader>-->
                         </el-form-item>
 					</div>
 				</el-form-item>
@@ -116,7 +125,7 @@
 	</section>
 </template>
 <script>
-	import {getClassify,addClassify,editClassify,removeClassify} from '../../api/api';
+	import {base,getClassify,addClassify,editClassify,removeClassify} from '../../api/api';
 	import upLoader from '../../components/uploader'
 	import siglUploader from '../../components/siglUploader.vue'
 	export default {
@@ -150,6 +159,7 @@
 
             };
 			return {
+                imageUrl: '',
 				filters: {
 					name: ''
 				},
@@ -212,6 +222,22 @@
 
         },
 		methods: {
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
+
 			resetAddForm(){
 				this.addFormVisible=false;
 				this.$refs['addForm'].resetFields();
@@ -449,5 +475,28 @@
 		border-radius:50%;
 		margin-left: 10px;
 		cursor: pointer;
+	}
+	.avatar-uploader .el-upload {
+		border: 1px dashed #d9d9d9;
+		border-radius: 6px;
+		cursor: pointer;
+		position: relative;
+		overflow: hidden;
+	}
+	.avatar-uploader .el-upload:hover {
+		border-color: #20a0ff;
+	}
+	.avatar-uploader-icon {
+		font-size: 28px;
+		color: #8c939d;
+		width: 178px;
+		height: 178px;
+		line-height: 178px;
+		text-align: center;
+	}
+	.avatar {
+		width: 178px;
+		height: 178px;
+		display: block;
 	}
 </style>

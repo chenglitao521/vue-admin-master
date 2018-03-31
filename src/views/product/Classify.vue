@@ -58,7 +58,7 @@
                         </el-form-item>
 					</div>
 				</el-form-item>
-				<el-form-item label="二级目录:"  >
+				<el-form-item label="二级目录:" prop="subName" >
 					<!-- <template scope="scope"> -->
 						<div class="second-item" v-for="(item,index) in addForm.subName">
 							<el-input v-model="item.name" auto-complete="off" style="width:200px">
@@ -124,15 +124,31 @@
 		data() {
 			 let validateFile =(rule, value, callback) => {
 
-                 console.dir(value);
-			 	if(value==""){
-					callback(new Error('请上传图片'));
-				}else if(value.name==""||value.src==""){
-					callback(new Error('请上传图片'));
-				}else{
-					callback();
+             //   console.dir(value);
+                if(value==""){
+                    callback(new Error('请上传图片'));
+                }else if(value.name==""||value.src==""){
+                    callback(new Error('请上传图片'));
+                }else{
+                    callback();
+                }
+            };
+            let validateFile2 =(rule, value, callback) => {
+               // console.info(value);
+                if(value==""||value.length==0){
+                    callback(new Error('请检查表单'));
 				}
-			};
+                for(let j = 0; j < value.length; j++) {
+                    if(value[j].name==""){
+                        callback(new Error('请输入目录'));
+                    }else if(value[j].files.name==""||value[j].files.src==""){
+                        callback(new Error('请上传图片'));
+                    }
+                }
+
+                    callback();
+
+            };
 			return {
 				filters: {
 					name: ''
@@ -147,10 +163,10 @@
 		          name: [
 		            { required: true, message: '请输入姓名' ,trigger: 'blur'}
 		          ],icon:[{
-						validator:validateFile,trigger: 'blur'
+						validator:validateFile,trigger: 'change'
 					}],
 		          subName: [
-		            { required: true, message: '请输入姓名' ,trigger: 'blur'}
+		            { validator:validateFile2 ,trigger: 'change'}
 		          ],
 		        },
 		        addForm: {//新增界面数据
@@ -166,12 +182,14 @@
 				// addStatus: 'ready',
 		  //       addfinish:false,
 				editFormRules: {
-					name: [
-						{ required: true, message: '请输入姓名'}
-					],
-					subName: [
-			            { required: true, message: '请输入姓名'}
-			        ]
+                    name: [
+                        { required: true, message: '请输入姓名' ,trigger: 'blur'}
+                    ],icon:[{
+                        validator:validateFile,trigger: 'change'
+                    }],
+                    subName: [
+                        { validator:validateFile2 ,trigger: 'change'}
+                    ],
 				},
 				//编辑界面数据
 				editForm: {
